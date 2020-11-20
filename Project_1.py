@@ -19,18 +19,18 @@ def goaltest(grid):
         return False
 
 def check_grid(grid, frontier, explored):
-        frontier_len = len(frontier)
-        if frontier_len == 0:
-            if grid not in explored:
-                return True
+    frontier_len = len(frontier)
+    if frontier_len == 0:
+        if grid not in explored:
+            return True
+    else:
+        if grid not in explored:
+            for i in range(frontier_len):
+                if frontier[i].grid == grid:
+                    return False
         else:
-            if grid not in explored:
-                for i in range(frontier_len):
-                    if frontier[i].grid == grid:
-                        return False
-            else:
-                return False
-        return True
+            return False
+    return True
 
 def move_left(node, coordinate, frontier, explored):
     i, j = coordinate[0], coordinate[1]
@@ -40,8 +40,7 @@ def move_left(node, coordinate, frontier, explored):
         child_grid = deepcopy(node.grid)
         child_grid[i][j], child_grid[i][j-1] = child_grid[i][j-1], child_grid[i][j]
         if check_grid(child_grid, frontier, explored):
-            child = Node(node, child_grid)
-            frontier.append(child)
+            add_to_frontier(node, child_grid, frontier)
 
 def move_right(node, coordinate, frontier, explored):
     i, j = coordinate[0], coordinate[1]
@@ -51,8 +50,7 @@ def move_right(node, coordinate, frontier, explored):
         child_grid = deepcopy(node.grid)
         child_grid[i][j], child_grid[i][j+1] = child_grid[i][j+1], child_grid[i][j]
         if check_grid(child_grid, frontier, explored):
-            child = Node(node, child_grid)
-            frontier.append(child)
+            add_to_frontier(node, child_grid, frontier)
 
 def move_up(node, coordinate, frontier, explored):
     i, j = coordinate[0], coordinate[1]
@@ -62,8 +60,7 @@ def move_up(node, coordinate, frontier, explored):
         child_grid = deepcopy(node.grid)
         child_grid[i][j], child_grid[i-1][j] = child_grid[i-1][j], child_grid[i][j]
         if check_grid(child_grid, frontier, explored):
-            child = Node(node, child_grid)
-            frontier.append(child)
+            add_to_frontier(node, child_grid, frontier)
 
 def move_down(node, coordinate, frontier, explored):
     i, j = coordinate[0], coordinate[1]
@@ -73,8 +70,11 @@ def move_down(node, coordinate, frontier, explored):
         child_grid = deepcopy(node.grid)
         child_grid[i][j], child_grid[i+1][j] = child_grid[i+1][j], child_grid[i][j]
         if check_grid(child_grid, frontier, explored):
-            child = Node(node, child_grid)
-            frontier.append(child)
+            add_to_frontier(node, child_grid, frontier)
+
+def add_to_frontier(node, child_grid, frontier):
+    child = Node(node, child_grid)
+    frontier.append(child)
 
 def expand(node, frontier, explored):
     first_0 = [None, None]
@@ -104,17 +104,6 @@ def expand(node, frontier, explored):
     move_down(node, first_0, frontier, explored)
     move_down(node, second_0, frontier, explored)
 
-def bfs(frontier, explored, initial_grid):
-    while frontier:
-        node = deque.popleft(frontier)
-
-        if(goaltest(node.grid)):
-            print_answer(initial_grid, node)
-            break
-        else:
-            explored.append(node.grid)
-            expand(node, frontier, explored)
-
 def print_answer(initial_grid, node):
     solution = []
     move_count = 0
@@ -128,6 +117,18 @@ def print_answer(initial_grid, node):
         move_count += 1
         print("\n")
     print("moves:", move_count)
+
+def bfs(frontier, explored, initial_grid):
+    while frontier:
+        node = deque.popleft(frontier)
+
+        if(goaltest(node.grid)):
+            print_answer(initial_grid, node)
+            break
+        else:
+            explored.append(node.grid)
+            expand(node, frontier, explored)
+
 
 def read_input_file(filename, grid):
     numbers = ""
