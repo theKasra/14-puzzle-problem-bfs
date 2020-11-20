@@ -117,6 +117,7 @@ def bfs(frontier, explored, initial_grid):
 
 def print_answer(initial_grid, node):
     solution = []
+    move_count = 0
     while node.parent:
         solution.insert(0, node.grid)
         node = node.parent
@@ -124,7 +125,9 @@ def print_answer(initial_grid, node):
     print(np.matrix(initial_grid), "\n")
     for i in solution:
         print(np.matrix(i))
+        move_count += 1
         print("\n")
+    print("moves:", move_count)
 
 def read_input_file(filename, grid):
     numbers = ""
