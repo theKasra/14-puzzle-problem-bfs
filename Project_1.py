@@ -104,31 +104,29 @@ def expand(node, frontier, explored):
     move_down(node, first_0, frontier, explored)
     move_down(node, second_0, frontier, explored)
 
-def print_answer(initial_grid, node):
+def print_answer(node):
     solution = []
     move_count = 0
-    while node.parent:
+    while node:
         solution.insert(0, node.grid)
         node = node.parent
     print("\nStep by step solution:\n")
-    print(np.matrix(initial_grid), "\n")
     for i in solution:
         print(np.matrix(i))
         move_count += 1
         print("\n")
     print("moves:", move_count)
 
-def bfs(frontier, explored, initial_grid):
+def bfs(frontier, explored):
     while frontier:
         node = deque.popleft(frontier)
 
         if(goaltest(node.grid)):
-            print_answer(initial_grid, node)
+            print_answer(node)
             break
         else:
             explored.append(node.grid)
             expand(node, frontier, explored)
-
 
 def read_input_file(filename, grid):
     numbers = ""
@@ -157,7 +155,7 @@ explored = []
 
 start_time = time.time()
 
-bfs(frontier, explored, grid)
+bfs(frontier, explored)
 
 print("frontier: ", len(frontier))
 print("explored: ", len(explored))
